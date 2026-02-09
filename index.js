@@ -7,9 +7,9 @@ const server = http.createServer((req, res) => {
     if (req.url == '/jokes' && req.method == 'GET') {
         getAllJokess(req, res);
     }
-   // if (req.url == '/jokes' && req.method == 'POST') {
-   //     addJoke(req, res);
-   // }
+    if (req.url == '/jokes' && req.method == 'POST') {
+        addJoke(req, res);
+    }
 });
 server.listen(3000);
 
@@ -25,4 +25,22 @@ function getAllJokess(req, res) {
     }
     res.writeHead(200, {'Content-Type': 'application/json' });
     res.end(JSON.stringify(jokes) );
+}
+
+function addJoke(req, res) {
+    let body = '';
+    req.on('data', function(chunk) {
+        body += chunk;        
+    });
+    req.on('end', function () {
+        let joke = JSON.parse(body);
+        joke.likes = 0;
+        joke.dislikes = 0;
+        let dir = fs.readdirSync(dataPath);
+        let fileName = dir.length + '.json';
+        let filePath = path.join(dataPath, fileName);
+        fs.writeFileSync(filePath,  JSON.stringify(joke));
+        res.writeHead(200, {'Content-Type': 'application/json' });
+        res.end();
+    });
 }
