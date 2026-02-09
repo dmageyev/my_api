@@ -17,12 +17,12 @@ function getAllJokess(req, res) {
     let dir = fs.readdirSync(dataPath);
     let jokes = [];
     for (let i=0; i<dir.length; i++) {
-        let file = fs.readFileSync(path.join(dataPath, i+'+.json'));
+        let file = fs.readFileSync(path.join(dataPath, i+'.json'));
         let jokeJson = Buffer.from(file).toString();
         let joke = JSON.parse(jokeJson);
         joke.id = i;
         jokes.push(joke);
     }
-    
-    res.end(JSON.stringify(getAllJokess));
+    res.writeHead(200, {'Content-Type': 'application/json' });
+    res.end(JSON.stringify(jokes) );
 }
